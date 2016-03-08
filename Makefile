@@ -4,7 +4,7 @@ CC = gcc $(GCCFLAGS)
 
 ARCHFLAGS = -m32
 COMMONFLAGS = -Wall -Wextra -Wno-unused-function $(ARCHFLAGS) -Igtb
-LDFLAGS = $(ARCHFLAGS) -ldl -Lgtb -lgtb -lpthread
+LDFLAGS = $(ARCHFLAGS) -ldl  -lpthread
 DEBUGFLAGS = $(COMMONFLAGS) -g -O0 -DEXPENSIVE_CHECKS -DASSERT2
 ANALYZEFLAGS = $(COMMONFLAGS) $(GCCFLAGS) -g -O0
 DEFAULTFLAGS = $(COMMONFLAGS) -g -O2
@@ -53,9 +53,6 @@ all: default
 
 daydreamer: gtb $(OBJFILES)
 	$(CC) $(OBJFILES) $(LDFLAGS) -o daydreamer
-
-gtb:
-	(cd gtb && $(MAKE) opt)
 
 clean:
 	rm -rf .depend daydreamer tags $(OBJFILES)

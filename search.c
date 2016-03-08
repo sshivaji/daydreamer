@@ -235,29 +235,7 @@ static bool check_eg_database(position_t* pos,
             pos->num_pieces[WHITE] + pos->num_pieces[BLACK] +
             pos->num_pawns[WHITE] + pos->num_pawns[BLACK] >
             options.max_egtb_pieces) return false;
-    if (options.use_gtb) {
-        // TODO: figure out when to use dtm instead of wdl.
-        bool success = false;
-        if (options.root_in_gtb) {
-            success = probe_gtb_hard_dtm(pos, score);
-        } else if (options.use_gtb_dtm) {
-            if (options.nonblocking_gtb) {
-                success = probe_gtb_firm_dtm(pos, score);
-            } else {
-                success = probe_gtb_hard_dtm(pos, score);
-            }
-        } else {
-            if (options.nonblocking_gtb) {
-                success = probe_gtb_firm(pos, score);
-            } else {
-                success = probe_gtb_hard(pos, score);
-            }
-        }
-        if (success) {
-            ++root_data.stats.egbb_hits;
-            return true;
-        }
-    } else if (options.use_scorpio_bb) {
+    if (options.use_scorpio_bb) {
         // For bitbases, ensure some progress constraints first.
         if ((is_mate_score(alpha) && alpha > 0) ||
                 (is_mate_score(beta) && beta < 0)) return false;

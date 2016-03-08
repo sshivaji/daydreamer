@@ -146,20 +146,6 @@ static void uci_handle_ext(char* command)
         sscanf(command+3, " %s %d", filename, &time_per_move);
         time_per_move *= 1000;
         epd_testsuite(filename, time_per_move);
-    } else if (!strncasecmp(command, "gtb", 3)) {
-        if (options.use_gtb) {
-            int score;
-            bool success = probe_gtb_hard_dtm(pos, &score);
-            if (success) {
-                printf("score: %d\n", score == 0 ? 0 :
-                        (MATE_VALUE-abs(score)) *
-                        (score < 0 ? -1 : 1));
-            } else {
-                printf("Tablebase lookup failed\n");
-            }
-        } else {
-            printf("Gaviota TBs not loaded\n");
-        }
     } else if (!strncasecmp(command, "book", 4)) {
         if (!options.book_loaded) printf("opening book not loaded\n");
         else {

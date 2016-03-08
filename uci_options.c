@@ -1,6 +1,5 @@
 
 #include "daydreamer.h"
-#include "gtb/gtb-probe.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -239,76 +238,6 @@ static void handle_clear_hash(void* opt, char* value)
     clear_transposition_table();
 }
 
-/*
- * Turns Gaviota tablebase use on and off.
- */
-static void handle_gtb_use(void* opt, char* value)
-{
-    uci_option_t* option = opt;
-    if (!option->value) return;
-    strncpy(option->value, value, 128);
-    bool val = !strcasecmp(value, "true");
-    if (val) {
-        load_gtb(get_option_string("gaviota tablebase path"),
-                options.gtb_cache_size*1024*1024);
-    } else unload_gtb();
-    memcpy(option->address, &val, sizeof(bool));
-}
-
-/*
- * Sets the path used to look for Gaviota bitbases, reloading them if the
- * appropriate option is set.
- */
-static void handle_gtb_path(void* opt, char* value)
-{
-    uci_option_t* option = opt;
-    strncpy(option->value, value, 128);
-    int len = strlen(option->value);
-    if (strrchr(option->value, DIR_SEP[0]) - option->value + 1 != len) {
-        strcat(option->value, DIR_SEP);
-    }
-    if (options.use_gtb) {
-        load_gtb(option->value, options.gtb_cache_size*1024*1024);
-    }
-}
-
-/*
- * Sets the Gaviota tablebase cache size.
- */
-static void handle_gtb_cache(void* opt, char* value)
-{
-    uci_option_t* option = opt;
-    if (!option->value) return;
-    strncpy(option->value, value, 128);
-    int size;
-    sscanf(value, "%d", &size);
-    memcpy(option->address, &size, sizeof(int));
-    if (options.use_gtb) {
-        load_gtb(get_option_string("gaviota tablebase path"),
-                options.gtb_cache_size*1024*1024);
-    }
-}
-
-/*
- * Sets the Gaviota tablebase compression scheme.
- */
-static void handle_gtb_scheme(void* opt, char* value)
-{
-    if (!value) return;
-    uci_option_t* option = opt;
-    if (value) strncpy(option->value, value, 128);
-    options.gtb_scheme = tb_CP4;
-    if (!strcasecmp(value, "uncompressed")) {
-        options.gtb_scheme = tb_UNCOMPRESSED;
-    } else if (!strcasecmp(value, "cp1")) options.gtb_scheme = tb_CP1;
-    else if (!strcasecmp(value, "cp2")) options.gtb_scheme = tb_CP2;
-    else if (!strcasecmp(value, "cp3")) options.gtb_scheme = tb_CP3;
-    else if (!strcasecmp(value, "cp4")) options.gtb_scheme = tb_CP4;
-    if (options.use_gtb) {
-        load_gtb(get_option_string("gaviota tablebase path"),
-                options.gtb_cache_size*1024*1024);
-    }
-}
 
 /*
  * Turns Scorpio bitbase use on and off.
@@ -384,15 +313,6 @@ void init_uci_options()
             0, 0, NULL, &options.chess960, &default_handler);
     add_uci_option("Arena-style 960 castling", OPTION_CHECK, "false",
             0, 0, NULL, &options.arena_castle, &default_handler);
-    add_uci_option("Use Gaviota tablebases", OPTION_CHECK, "false",
-            0, 0, NULL, &options.use_gtb, &handle_gtb_use);
-    add_uci_option("Gaviota tablebase path", OPTION_STRING, ".",
-            0, 0, NULL, NULL, &handle_gtb_path);
-    char* schemes[6] = { "uncompressed", "cp1", "cp2", "cp3", "cp4", NULL };
-    add_uci_option("Gaviota compression scheme", OPTION_COMBO, "cp4",
-            0, 0, schemes, &options.gtb_scheme, &handle_gtb_scheme);
-    add_uci_option("Gaviota tablebase cache size", OPTION_SPIN, "32",
-            0, 4096, NULL, &options.gtb_cache_size, &handle_gtb_cache);
     add_uci_option("Load tablebases in a separate thread", OPTION_CHECK, "true",
             0, 0, NULL, &options.nonblocking_gtb, &default_handler);
     add_uci_option("Tablebase pieces", OPTION_SPIN, "5",

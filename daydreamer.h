@@ -124,14 +124,6 @@ int line_to_san_str(position_t* pos, move_t* line, char* san);
 move_t san_str_to_move(position_t* pos, char* san);
 void position_to_fen_str(const position_t* pos, char* fen);
 
-// gtb.c
-bool load_gtb(char* gtb_pathlist, int cache_size_bytes);
-void unload_gtb(void);
-bool probe_gtb_soft(const position_t* pos, int* value);
-bool probe_gtb_firm(const position_t* pos, int* value);
-bool probe_gtb_hard(const position_t* pos, int* value);
-bool probe_gtb_hard_dtm(const position_t* pos, int* score);
-bool probe_gtb_firm_dtm(const position_t* pos, int* score);
 
 // hash.c
 void init_hash(void);
