@@ -5,7 +5,7 @@
 #include <strings.h>
 #include <stdio.h>
 
-int main(int argc, char* argv[])
+int engine_main(int argc, char* argv[])
 {
     // Set unbuffered i/o.
     setbuf(stdout, NULL);

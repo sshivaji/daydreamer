@@ -571,15 +571,15 @@ static int64_t move_weight(position_t* pos,
         case 0x16: break;                                       // Zugzwang
         default: break;
     }
-    printf("info string book move ");
+    // printf("info string book move ");
     print_coord_move(move);
-    printf("weight %6"PRIu64"\n", weight);
-    //printf("weight %6"PRIu64" wins %6d draws %6d losses %6d rec %3d "
-    //        "note %2d avg_games %6d avg_score %9d "
-    //        "perf_games %6d perf_score %9d\n",
-    //        weight, entry.wins, entry.draws, entry.losses, entry.recommendation,
-    //        annotation, entry.avg_rating_games, entry.avg_rating_score,
-    //        entry.perf_rating_games, entry.perf_rating_score);
+    // printf("weight %6"PRIu64"\n", weight);
+    printf("weight %6"PRIu64" wins %6d draws %6d losses %6d rec %3d "
+           "note %2d avg_games %6d avg_score %9d "
+           "perf_games %6d perf_score %9d\n",
+           weight, entry.wins, entry.draws, entry.losses, entry.recommendation,
+           annotation, entry.avg_rating_games, entry.avg_rating_score,
+           entry.perf_rating_games, entry.perf_rating_score);
     return weight;
 }
 
@@ -638,4 +638,3 @@ static bool ctg_get_entry(position_t* pos, ctg_entry_t* entry)
     if (!ctg_lookup_entry(page_index, &sig, entry)) return false;
     return true;
 }
-
