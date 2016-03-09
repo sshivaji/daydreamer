@@ -571,13 +571,16 @@ static int64_t move_weight(position_t* pos,
         case 0x16: break;                                       // Zugzwang
         default: break;
     }
+
+    static char move_str[7];
+    move_to_coord_str(move, move_str);
     // printf("info string book move ");
-    print_coord_move(move);
+    // print_coord_move(move);
     // printf("weight %6"PRIu64"\n", weight);
-    printf("weight %6"PRIu64" wins %6d draws %6d losses %6d rec %3d "
-           "note %2d avg_games %6d avg_score %9d "
-           "perf_games %6d perf_score %9d\n",
-           weight, entry.wins, entry.draws, entry.losses, entry.recommendation,
+    printf("{\"move\": %s ,\"weight\": %6"PRIu64", \"wins\":%6d,\"draws\":%6d, \"losses\":%6d, \"rec\":%3d, "
+           "\"note\":%2d, \"avg_games\":%6d,\"avg_score\":%9d, "
+           "\"perf_games\":%6d, \"perf_score\":%9d}\n",
+           move_str, weight, entry.wins, entry.draws, entry.losses, entry.recommendation,
            annotation, entry.avg_rating_games, entry.avg_rating_score,
            entry.perf_rating_games, entry.perf_rating_score);
     return weight;
