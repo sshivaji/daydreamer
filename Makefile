@@ -1,3 +1,6 @@
+PREFIX = /usr
+BINDIR = $(PREFIX)/bin
+EXE = ctg_reader
 
 GCCFLAGS = --std=c99
 CC = gcc $(GCCFLAGS)
@@ -29,33 +32,42 @@ PROFFILES := $(SRCFILES:.c=.gcno) $(SRCFILES:.c=.gcda)
 .DEFAULT_GOAL := default
 
 debug:
-	$(MAKE) daydreamer \
+	$(MAKE) $(EXE) \
 	    CFLAGS="$(DEBUGFLAGS) $(GITFLAGS) $(DBGCOMPILESTR)"
 
 default:
-	$(MAKE) daydreamer \
+	$(MAKE) $(EXE) \
 	    CFLAGS="$(DEFAULTFLAGS) $(GITFLAGS) $(DFTCOMPILESTR)"
 
 opt:
-	$(MAKE) daydreamer \
+	$(MAKE) $(EXE) \
 	    CFLAGS="$(OPTFLAGS) $(GITFLAGS) $(OPTCOMPILESTR)"
 
 pgo-start:
-	$(MAKE) daydreamer \
+	$(MAKE) $(EXE) \
 	    CFLAGS="$(PGO1FLAGS) $(GITFLAGS) $(OPTCOMPILESTR)" \
 	    LDFLAGS='$(LDFLAGS) -fprofile-generate'
 
 pgo-finish:
-	$(MAKE) daydreamer \
+	$(MAKE) $(EXE) \
 	    CFLAGS="$(PGO2FLAGS) $(GITFLAGS) $(PGOCOMPILESTR)"
 
 all: default
 
-daydreamer: gtb $(OBJFILES)
-	$(CC) $(OBJFILES) $(LDFLAGS) -o daydreamer
+
+install: all
+	-mkdir -p -m 755 $(BINDIR)
+	-cp $(EXE) $(BINDIR)
+	-strip $(BINDIR)/$(EXE)
+
+uninstall:
+	$(RM) $(BINDIR)/$(EXE)
+
+ctg_reader: gtb $(OBJFILES)
+	$(CC) $(OBJFILES) $(LDFLAGS) -o ctg_reader
 
 clean:
-	rm -rf .depend daydreamer tags $(OBJFILES)
+	rm -rf .depend $(EXE) tags $(OBJFILES)
 
 pgo-clean:
 	rm -f $(PROFFILES)
